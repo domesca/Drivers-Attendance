@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Drivers Attendance</title>
+  <style>
+    body { font-family: Arial; text-align: center; padding: 40px; }
+    input, button { padding: 10px; margin: 10px; font-size: 1em; }
+  </style>
+  <script>
+    async function getIP() {
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        return data.ip;
+      } catch {
+        return "unknown";
+      }
+    }
+
+    async function handleDriverCheck(action) {
+      const name = document.getElementById("driver").value;
+      const hub = document.getElementById("hub").value;
+      if (!name || !hub) {
+        alert("Please enter driver name and HUB");
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const ip = await getIP();
+        const data = {
+          name: name,
+          hub: hub,
+          latitude: pos.coords.latitude,
+          longitude: pos.coords.longitude,
+          timestamp: new Date().toISOString(),
+          ip: ip,
+          action: action
+        };
+
+        fetch("PASTE_YOUR_WEB_APP_URL_HERE", {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        alert(`Driver ${action === "in" ? "Check-In" : "Check-Out"} submitted.`);
+        document.getElementById("driver").value = "";
+        document.getElementById("hub").value = "";
+      });
+    }
+  </script>
+</head>
+<body>
+  <h2>Drivers Attendance</h2>
+  <label>Driver Name:</label><br>
+  <input type="text" id="driver" placeholder="Enter driver name" /><br>
+  <label>HUB:</label><br>
+  <input type="text" id="hub" placeholder="Enter hub name" /><br><br>
+  <button onclick="handleDriverCheck('in')">Check In</button>
+  <button onclick="handleDriverCheck('out')">Check Out</button>
+</body>
+</html>

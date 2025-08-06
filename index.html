@@ -19,9 +19,9 @@
 
     async function handleDriverCheck(action) {
       const name = document.getElementById("driver").value;
-      const hub = document.getElementById("hub").value;
-      if (!name || !hub) {
-        alert("Please enter driver name and HUB");
+      
+      if (!name) {
+        alert("Please enter driver name");
         return;
       }
 
@@ -29,7 +29,6 @@
         const ip = await getIP();
         const data = {
           name: name,
-          hub: hub,
           latitude: pos.coords.latitude,
           longitude: pos.coords.longitude,
           timestamp: new Date().toISOString(),
@@ -46,7 +45,7 @@
 
         alert(`Driver ${action === "in" ? "Check-In" : "Check-Out"} submitted.`);
         document.getElementById("driver").value = "";
-        document.getElementById("hub").value = "";
+
       });
     }
   </script>
